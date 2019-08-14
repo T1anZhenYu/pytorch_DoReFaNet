@@ -61,4 +61,4 @@ def data_loader(train_batch_size,test_batch_size):
         batch_size=test_batch_size,
         shuffle=True
     )
-    return train_loader,test_loader
+    return train_loader,test_loader,len(test_dataset)

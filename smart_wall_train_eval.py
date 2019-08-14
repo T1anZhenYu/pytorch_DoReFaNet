@@ -56,7 +56,7 @@ def main():
 
   print('==> Preparing data ..')
 
-  train_loader,eval_loader = data_loader(cfg.train_batch_size,cfg.eval_batch_size)
+  train_loader,eval_loader,len_eval_loader = data_loader(cfg.train_batch_size,cfg.eval_batch_size)
 
   print('==> Building ResNet..')
   model = resnet20(wbits=cfg.Wbits, abits=cfg.Abits).cuda()
@@ -106,7 +106,7 @@ def main():
       _, predicted = torch.max(outputs.data, 1)
       correct += predicted.eq(targets.data).cpu().sum().item()
 
-    acc = 100. * correct / len(eval_dataset)
+    acc = 100. * correct / len_eval_loader
     print('%s------------------------------------------------------ '
           'Precision@1: %.2f%% \n' % (datetime.now(), acc))
     summary_writer.add_scalar('Precision@1', acc, global_step=epoch)
