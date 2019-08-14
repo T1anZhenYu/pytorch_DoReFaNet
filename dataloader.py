@@ -42,7 +42,7 @@ class SmartWall(Dataset):
             single_label = self.data_raw[index]['label']           
 
         print(single_data.shape)
-        return (torch.transpose(single_data,1,3), single_label)
+        return (torch.transpose(single_data,0,2), single_label)
 
     def __len__(self):
         return self.data_len
