@@ -81,9 +81,9 @@ class quan_bn(nn.Module):
 
     shape = list(x.size())
 
-
+    print('x:',x)
     layer = nn.BatchNorm2d(shape[1])
-    fake_output = layer(x.cuda())
+    fake_output = layer(x)
     gamma = layer.weight
     beta = layer.bias
     moving_mean = layer.running_mean
