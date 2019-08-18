@@ -76,7 +76,7 @@ class quan_bn(nn.Module):
 
     quan_values = np.array([round((quan_points0[i]-0.005)*(2**self.bitA-1))\
     /(float(2**self.bitA-1)) for i in range(len(quan_points0))])#values after quantization 
-
+    quan_values = np.append(quan_values,np.array([1]))
     quan_points0 = np.append(np.insert(quan_points0,0,-1000.),np.array([1000.]))
 
     shape = list(x.size())
@@ -114,7 +114,7 @@ class quan_bn(nn.Module):
 
     xn = label[0]*quan_values[0]
     for i in range(1,len(label)):
-        print('quan_values:',len(quan_values))
+        print('quan_values:',quan_values)
         print('label:',len(label))
         xn += label[i]*quan_values[i]
 
