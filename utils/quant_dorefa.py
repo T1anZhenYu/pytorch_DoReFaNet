@@ -88,8 +88,8 @@ class quan_bn(nn.Module):
     moving_mean = layer.running_mean
     moving_var = torch.sqrt(layer.running_var)
 
-    c_max = torch.max(torch.max(torch.max(x,dim=0).values,dim=-1).values,dim=-1)
-    c_min = torch.min(torch.min(torch.min(x,dim=0).values,dim=-1).values,dim=-1)
+    c_max = torch.max(torch.max(torch.max(x,dim=0).values,dim=-1).values,dim=-1).values
+    c_min = torch.min(torch.min(torch.min(x,dim=0).values,dim=-1).values,dim=-1).values
 
     if self.training:
         bm = torch.unsqueeze((c_max-c_min)/2,dim=-1)
