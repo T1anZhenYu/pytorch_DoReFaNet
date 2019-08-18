@@ -109,6 +109,8 @@ class quan_bn(nn.Module):
     label = []
 
     for i in range(1,len(quan_points)):
+        print('quan_points',quan_points)
+        print('i',i)
         label.append((inputs>quan_points[:,i-1]) * (inputs<quan_points[:,i]))
 
     xn = label[0]*quan_values[0]
