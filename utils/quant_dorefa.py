@@ -82,6 +82,7 @@ class quan_bn(nn.Module):
     shape = list(x.size())
 
     print('x:',x)
+    x = x.type(torch.cuda.FloatTensor)
     layer = nn.BatchNorm2d(shape[1])
     fake_output = layer(x)
     gamma = layer.weight
