@@ -67,7 +67,7 @@ class quan_bn(nn.Module):
     self.bitA = bitA
 
   def forward(self,x):
-    if self.training:
+
     def get_quan_point():
         return np.array([(2**self.bitA-i+0.5)/(2**self.bitA-1) \
             for i in range(2**self.bitA,1,-1)])
