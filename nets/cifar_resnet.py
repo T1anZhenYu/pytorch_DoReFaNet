@@ -17,15 +17,16 @@ class PreActBlock_conv_Q(nn.Module):
     self.conv0 = Conv2d(in_planes, out_planes, kernel_size=3, stride=stride, padding=1, bias=False)
     self.bn1 = nn.BatchNorm2d(out_planes)
     self.conv1 = Conv2d(out_planes, out_planes, kernel_size=3, stride=1, padding=1, bias=False)
-
+    self.quan_bn1 = quan_bn(abit)
+    self.quan_bn2 = quan_bn(abit)
     self.skip_conv = None
     if stride != 1:
       self.skip_conv = Conv2d(in_planes, out_planes, kernel_size=1, stride=stride, padding=0, bias=False)
       self.skip_bn = nn.BatchNorm2d(out_planes)
 
   def forward(self, x):
-    out = self.act_q(F.relu(self.bn0(x)))
-
+    #out = self.act_q(F.relu(self.bn0(x)))
+    out = self.quan_bn1(x)
     if self.skip_conv is not None:
       shortcut = self.skip_conv(out)
       shortcut = self.skip_bn(shortcut)
@@ -33,7 +34,8 @@ class PreActBlock_conv_Q(nn.Module):
       shortcut = x
 
     out = self.conv0(out)
-    out = self.act_q(F.relu(self.bn1(out)))
+    #out = self.act_q(F.relu(self.bn1(out)))
+    out = self.quan_bn2(out)
     out = self.conv1(out)
     out += shortcut
     return out
