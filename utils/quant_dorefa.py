@@ -95,7 +95,7 @@ class quan_bn(nn.Module):
         bm = torch.unsqueeze((c_max-c_min)/2,dim=-1)
         bv = torch.unsqueeze(torch.sqrt(c_max-c_min),dim=-1)
 
-        quan_points = bv*quan_points0/(torch.unsqueeze(gamma,dim=-1)) + \
+        quan_points = bv*torch.tensor(quan_points0)/(torch.unsqueeze(gamma,dim=-1)) + \
         bm - bv*toch.unsqueeze(beta/gamma,dim=-1)
 
     else:
