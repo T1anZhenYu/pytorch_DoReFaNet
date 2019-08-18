@@ -40,6 +40,7 @@ def quan_bn(x,training,bitW,bitA,kernel_size):
     moving_mean = layer.running_mean
     moving_var = layer.running_var
 
+    torch.max(x,)
     if training:
         bm = torch.unsqueeze(dignoal(x,kernel_size),dim=-1)
         bv = torch.unsqueeze(moving_var,dim=-1)
