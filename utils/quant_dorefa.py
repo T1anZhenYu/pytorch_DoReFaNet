@@ -118,7 +118,7 @@ class quan_bn(nn.Module):
         print('label:',len(label))
         xn += label[i]*quan_values[i]
 
-    quan_output = torch.transpose(torch.reshape(xn,[shape[0],shape[2],shape[3],shape[1]]),shape)
+    quan_output = torch.transpose(torch.reshape(xn,[shape[0],shape[2],shape[3],shape[1]]),1,-1)
 
     if training:
         return (quan_output - fake_output).detech() + fake_output
