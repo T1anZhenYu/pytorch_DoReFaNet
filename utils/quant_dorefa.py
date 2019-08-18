@@ -99,8 +99,8 @@ class quan_bn(nn.Module):
         bm - bv*torch.unsqueeze(beta/gamma,dim=-1).type(torch.cuda.FloatTensor)
 
     else:
-        quan_points = moving_var*torch.tensor(quan_points0,dtype=torch.float).cuda()/(torch.unsqueeze(gamma,dim=-1)) + \
-        moving_mean - moving_var*torch.unsqueeze(beta/gamma,dim=-1).type(torch.cuda.FloatTensor)
+        quan_points = torch.unsqueeze(moving_var,dim=-1)*torch.tensor(quan_points0,dtype=torch.float).cuda()/(torch.unsqueeze(gamma,dim=-1)) + \
+        torch.unsqueeze(moving_mean,dim=-1) - torch.unsqueeze(moving_var,dim=-1)*torch.unsqueeze(beta/gamma,dim=-1).type(torch.cuda.FloatTensor)
 
     inputs = torch.reshape(torch.transpose(x,1,-1),[-1,shape[1]])
 
