@@ -114,6 +114,8 @@ class quan_bn(nn.Module):
 
     xn = label[0]*quan_values[0]
     for i in range(1,len(label)):
+        print('quan_values:',len(quan_values))
+        print('label:',len(label))
         xn += label[i]*quan_values[i]
 
     quan_output = torch.transpose(torch.reshape(xn,[shape[0],shape[2],shape[3],shape[1]]),shape)
