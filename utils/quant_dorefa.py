@@ -94,9 +94,7 @@ class quan_bn(nn.Module):
     if self.training:
         bm = torch.unsqueeze((c_max-c_min)/2,dim=-1).cuda()
         bv = torch.unsqueeze(torch.sqrt(c_max-c_min),dim=-1).cuda()
-        print('bv.dtype',bv.dtype)
-        print('quan_points0.dtype',quan_points0.dtype)
-        print('gamma',gamma.dtype)
+
         quan_points = bv*torch.tensor(quan_points0,dtype=torch.float).cuda()/(torch.unsqueeze(gamma,dim=-1)) + \
         bm - bv*torch.unsqueeze(beta/gamma,dim=-1).type(torch.cuda.FloatTensor)
 
@@ -114,8 +112,7 @@ class quan_bn(nn.Module):
 
     xn = label[0].type(torch.cuda.FloatTensor)*quan_values[0]
     for i in range(1,len(label)):
-        print('quan_values:',quan_values)
-        print('label:',len(label))
+
         xn += label[i].type(torch.cuda.FloatTensor)*quan_values[i]
 
     quan_output = torch.transpose(torch.reshape(xn,[shape[0],shape[2],shape[3],shape[1]]),1,-1)
