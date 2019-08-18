@@ -112,11 +112,11 @@ class quan_bn(nn.Module):
 
         label.append((inputs>quan_points[:,i-1]) * (inputs<quan_points[:,i]))
 
-    xn = label[0]*quan_values[0]
+    xn = label[0].type(torch.cuda.FloatTensor)*quan_values[0]
     for i in range(1,len(label)):
         print('quan_values:',quan_values)
         print('label:',len(label))
-        xn += label[i]*quan_values[i]
+        xn += label[i].type(torch.cuda.FloatTensor)*quan_values[i]
 
     quan_output = torch.transpose(torch.reshape(xn,[shape[0],shape[2],shape[3],shape[1]]),1,-1)
 
