@@ -86,21 +86,22 @@ class quan_bn(nn.Module):
     gamma = layer.weight
     beta = layer.bias
     moving_mean = layer.running_mean
-    moving_var = torch.sqrt(layer.running_var)
+    moving_std = torch.sqrt(layer.running_var)
 
     c_max = torch.max(torch.max(torch.max(x,dim=0).values,dim=-1).values,dim=-1).values
     c_min = torch.min(torch.min(torch.min(x,dim=0).values,dim=-1).values,dim=-1).values
 
+
     if self.training:
-        bm = torch.unsqueeze((c_max+c_min)/2,dim=-1).cuda()
-        bv = torch.unsqueeze(torch.sqrt(c_max-c_min),dim=-1).cuda()
+        bm = torch.unsqueeze(torch.mean(x,dim=[0,2,3]),dim=-1).cuda()
+        bv = torch.unsqueeze(torch.var(x,dim=[0,2,3]),dim=-1).cuda()
 
         quan_points = bv*torch.tensor(quan_points0,dtype=torch.float).cuda()/(torch.unsqueeze(gamma,dim=-1)) + \
         bm - bv*torch.unsqueeze(beta/gamma,dim=-1).type(torch.cuda.FloatTensor)
 
     else:
-        quan_points = torch.unsqueeze(moving_var,dim=-1)*torch.tensor(quan_points0,dtype=torch.float).cuda()/(torch.unsqueeze(gamma,dim=-1)) + \
-        torch.unsqueeze(moving_mean,dim=-1) - torch.unsqueeze(moving_var,dim=-1)*torch.unsqueeze(beta/gamma,dim=-1).type(torch.cuda.FloatTensor)
+        quan_points = torch.unsqueeze(moving_std,dim=-1)*torch.tensor(quan_points0,dtype=torch.float).cuda()/(torch.unsqueeze(gamma,dim=-1)) + \
+        torch.unsqueeze(moving_mean,dim=-1) - torch.unsqueeze(moving_std,dim=-1)*torch.unsqueeze(beta/gamma,dim=-1).type(torch.cuda.FloatTensor)
 
     inputs = torch.reshape(torch.transpose(x,1,-1),[-1,shape[1]])
 
