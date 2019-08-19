@@ -119,7 +119,7 @@ class quan_bn(nn.Module):
     quan_output = torch.transpose(torch.reshape(xn,[shape[0],shape[2],shape[3],shape[1]]),1,-1)
 
     if self.training:
-        return (quan_output - fake_output).detach() + fake_output
+        return  fake_output
 
     else:
         return quan_output
