@@ -26,7 +26,7 @@ class PreActBlock_conv_Q(nn.Module):
 
   def forward(self, x):
     #out = self.act_q(F.relu(self.bn0(x)))
-    out = self.quan_bn1(x.cuda())
+    out = self.quan_bn1(x)
     if self.skip_conv is not None:
       shortcut = self.skip_conv(out)
       shortcut = self.skip_bn(shortcut)
@@ -34,8 +34,8 @@ class PreActBlock_conv_Q(nn.Module):
       shortcut = x
 
     out = self.conv0(out)
-    #out = self.act_q(F.relu(self.bn1(out)))
-    out = self.quan_bn2(out)
+    out = self.act_q(F.relu(self.bn1(out)))
+    #out = self.quan_bn2(out)
     out = self.conv1(out)
     out += shortcut
     return out
