@@ -119,10 +119,10 @@ class quan_bn(nn.Module):
     quan_output = torch.transpose(torch.reshape(xn,[shape[0],shape[2],shape[3],shape[1]]),1,-1)
 
     if self.training:
-        return  fake_output
+        return fake_output
 
     else:
-        return quan_output
+        return fake_output
 
 
 def conv2d_Q_fn(w_bit):
