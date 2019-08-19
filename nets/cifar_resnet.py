@@ -25,8 +25,8 @@ class PreActBlock_conv_Q(nn.Module):
       self.skip_bn = nn.BatchNorm2d(out_planes)
 
   def forward(self, x):
-    #out = self.act_q(F.relu(self.bn0(x)))
-    out = self.quan_bn1(x)
+    out = self.act_q(F.relu(self.bn0(x)))
+    #out = self.quan_bn1(x)
     if self.skip_conv is not None:
       shortcut = self.skip_conv(out)
       shortcut = self.skip_bn(shortcut)
