@@ -51,6 +51,7 @@ class SmartWall(Dataset):
 
 def data_loader(train_batch_size,test_batch_size):
     x = np.load('/content/drive/My Drive/smart_wall_data/X.npy')
+    print('x:',x.shape)
     y = np.load('/content/drive/My Drive/smart_wall_data/y.npy')
     x_train,x_test,y_train,y_test = train_test_split(x,y,test_size=0.2,random_state=0,stratify=y)
 
