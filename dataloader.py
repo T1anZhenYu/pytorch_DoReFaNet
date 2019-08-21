@@ -11,7 +11,7 @@ class SmartWall(Dataset):
             img_path (string): path to the folder where images are
             transform: pytorch transforms for transforms and tensor conversion
         """
-        self.data = data.astype(float32)
+        self.data = data
         self.label = label
         #self.data_raw = dict(np.load(data_path,allow_pickle=True))['arr_0']
         '''
