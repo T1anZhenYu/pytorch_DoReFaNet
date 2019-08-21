@@ -31,7 +31,7 @@ class SmartWall(Dataset):
         #self.data_len=len(self.data_raw)
 
     def __getitem__(self, index):
-        return torch.unsqueeze(torch.from_numpy(self.data[index,:,:]),0),self.label[index]
+        return torch.unsqueeze(torch.from_numpy(self.data[index,:,:]),0),torch.from_numpy(self.label[index])
         '''
         temp = torch.unsqueeze(torch.cuda.FloatTensor(self.data_raw[index]['data']),-1)
         if temp.shape[0]==0:
