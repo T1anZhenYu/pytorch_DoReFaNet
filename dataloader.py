@@ -11,7 +11,7 @@ class SmartWall(Dataset):
             img_path (string): path to the folder where images are
             transform: pytorch transforms for transforms and tensor conversion
         """
-        self.data = data
+        self.data = data.astype(float32)
         self.label = label
         #self.data_raw = dict(np.load(data_path,allow_pickle=True))['arr_0']
         '''
@@ -31,7 +31,7 @@ class SmartWall(Dataset):
         #self.data_len=len(self.data_raw)
 
     def __getitem__(self, index):
-        return torch.unsqueeze(torch.unsqueeze(torch.from_numpy(self.data[index,:,:]),0),0),torch.from_numpy(self.label[index])
+        return torch.unsqueeze(torch.unsqueeze(torch.from_numpy(self.data[index,:,:]),0),0),self.label[index]
         '''
         temp = torch.unsqueeze(torch.cuda.FloatTensor(self.data_raw[index]['data']),-1)
         if temp.shape[0]==0:
