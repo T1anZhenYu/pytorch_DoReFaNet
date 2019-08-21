@@ -78,7 +78,7 @@ def main():
     for batch_idx, (inputs, targets) in enumerate(train_loader):
       outputs = model(inputs.cuda())
       loss = criterion(outputs, targets.cuda())
-
+      print('loss:',loss)
       optimizer.zero_grad()
       loss.backward()
       optimizer.step()
