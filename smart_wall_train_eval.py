@@ -59,7 +59,7 @@ def main():
   train_loader,eval_loader,len_eval_loader = data_loader(cfg.train_batch_size,cfg.eval_batch_size)
 
   print('==> Building ResNet..')
-  model = resnet20(wbits=cfg.Wbits, abits=cfg.Abits).cuda()
+  model = resnet56(wbits=cfg.Wbits, abits=cfg.Abits).cuda()
 
   optimizer = torch.optim.SGD(model.parameters(), lr=cfg.lr, momentum=0.9, weight_decay=cfg.wd)
   lr_schedu = optim.lr_scheduler.MultiStepLR(optimizer, [100, 150, 180], gamma=0.1)
