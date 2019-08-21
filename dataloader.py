@@ -55,8 +55,8 @@ def data_loader(train_batch_size,test_batch_size):
     y = np.load('/content/drive/My Drive/smart_wall_data/y.npy')
     x_train,x_test,y_train,y_test = train_test_split(x,y,test_size=0.2,random_state=0,stratify=y)
 
-    train_dataset=SmartWall(train_root)
-    test_dataset=SmartWall(test_root)
+    train_dataset=SmartWall(x_train,y_train)
+    test_dataset=SmartWall(x_test,y_test)
     train_loader=torch.utils.data.DataLoader(
         train_dataset,
         batch_size=train_batch_size,
