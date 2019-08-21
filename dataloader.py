@@ -12,7 +12,7 @@ class SmartWall(Dataset):
             transform: pytorch transforms for transforms and tensor conversion
         """
         self.data = torch.from_numpy(data.astype(np.single))
-        self.label = torch.from_numpy(label)
+        self.label = torch.from_numpy(np.clip(label,0,1))
         print('label:',self.label)
 
         #self.data_raw = dict(np.load(data_path,allow_pickle=True))['arr_0']
