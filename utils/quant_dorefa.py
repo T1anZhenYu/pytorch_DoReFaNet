@@ -67,19 +67,19 @@ class MYBN(nn.Module):
         super(MYBN,self).__init__()
         self.channel= channel
         if affine:
-            self.gamma = Variable(torch.ones(channel,dtype=torch.float),requires_grad = True)
-            self.beta = Variable(torch.zeros(channel,dtype=torch.float),requires_grad = True)
+            self.gamma = Variable(torch.ones(channel,dtype=torch.float),requires_grad = True).cuda()
+            self.beta = Variable(torch.zeros(channel,dtype=torch.float),requires_grad = True).cuda()
         else:
-            self.gamma = Variable(torch.ones(channel,dtype=torch.float))
-            self.beta = Variable(torch.zeros(channel,dtype=torch.float))         
-        self.moving_mean = Variable(torch.zeros(channel,dtype=torch.float))
-        self.moving_var = Variable(torch.ones(channel,dtype=torch.float))       
+            self.gamma = Variable(torch.ones(channel,dtype=torch.float)).cuda()
+            self.beta = Variable(torch.zeros(channel,dtype=torch.float)).cuda()         
+        self.moving_mean = Variable(torch.zeros(channel,dtype=torch.float)).cuda()
+        self.moving_var = Variable(torch.ones(channel,dtype=torch.float)).cuda()    
         self.decay = decay
         self.eps = eps
     def forward(self,x):
         x = torch.transpose(x,1,3)
-        c_max = torch.max(torch.max(torch.max(x,dim=0)[0],dim=0)[0],dim=0)[0]
-        c_min = torch.min(torch.min(torch.min(x,dim=0)[0],dim=0)[0],dim=0)[0]
+        c_max = torch.max(torch.max(torch.max(x,dim=0)[0],dim=0)[0],dim=0)[0].cuda()
+        c_min = torch.min(torch.min(torch.min(x,dim=0)[0],dim=0)[0],dim=0)[0].cuda()
                                    
         mean = (c_max+c_min)/2
         var = (c_max-c_min)/2 + self.eps
