@@ -124,6 +124,31 @@ class quan_bn(nn.Module):
     else:
         return fake_output
 
+class MYBN(nn.Module):
+    def __init__(self,channel,decay=0.9):
+        super(MYBN,self).__init__()
+        self.channel= channel
+        self.gamma = Variable(torch.ones(channel,dtype=torch.float),requires_grad = True)
+        self.beta = Variable(torch.zeros(channel,dtype=torch.float),requires_grad = True)
+        self.moving_mean = Variable(torch.zeros(channel,dtype=torch.float))
+        self.moving_var = Variable(torch.ones(channel,dtype=torch.float))       
+        self.decay = decay
+    def forward(self,x):
+        x = torch.transpose(x,1,3)
+        c_max = torch.max(torch.max(torch.max(x,dim=0)[0],dim=0)[0],dim=0)[0]
+        c_min = torch.min(torch.min(torch.min(x,dim=0)[0],dim=0)[0],dim=0)[0]
+                                   
+        mean = (c_max+c_min)/2
+        var = (c_max-c_min)/2
+                                   
+        if self.training:
+            self.moving_mean = self.decay * self.moving_mean + (1-self.decay) * mean
+            self.moving_var = self.decay * self.moving_var + (1-self.decay)*var 
+            return self.gamma*(x - mean)/var + self.beta
+        else:
+            return self.gamma*(x-self.moving_mean)/self.moving_var + self.beta
+
+
 
 def conv2d_Q_fn(w_bit):
   class Conv2d_Q(nn.Conv2d):
