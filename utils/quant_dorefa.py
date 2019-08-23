@@ -75,13 +75,14 @@ class MYBN(nn.Module):
         self.moving_mean = Variable(torch.zeros(channel,dtype=torch.float))
         self.moving_var = Variable(torch.ones(channel,dtype=torch.float))       
         self.decay = decay
+        self.eps = eps
     def forward(self,x):
         x = torch.transpose(x,1,3)
         c_max = torch.max(torch.max(torch.max(x,dim=0)[0],dim=0)[0],dim=0)[0]
         c_min = torch.min(torch.min(torch.min(x,dim=0)[0],dim=0)[0],dim=0)[0]
                                    
         mean = (c_max+c_min)/2
-        var = (c_max-c_min)/2 + eps
+        var = (c_max-c_min)/2 + self.eps
                                    
         if self.training:
             self.moving_mean = self.decay * self.moving_mean + (1-self.decay) * mean
