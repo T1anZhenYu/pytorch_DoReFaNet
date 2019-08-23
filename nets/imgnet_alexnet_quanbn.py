@@ -2,6 +2,7 @@ import torch
 import torch.nn as nn
 import torch.nn.init as init
 
+from utils.quant_dorefa import *
 
 
 class AlexNet_Q(nn.Module):
@@ -12,25 +13,28 @@ class AlexNet_Q(nn.Module):
 
     self.features = nn.Sequential(
       nn.Conv2d(3, 96, kernel_size=11, stride=4, padding=2),
-      nn.BatchNorm2d(96),
+      MYBN(96),
       nn.ReLU(inplace=True),
       nn.MaxPool2d(kernel_size=3, stride=2),
 
       Conv2d(96, 256, kernel_size=5, padding=2),
-      nn.BatchNorm2d(256),
+      MYBN(256),
       nn.ReLU(inplace=True),
       activation_quantize_fn(a_bit=abit),
       nn.MaxPool2d(kernel_size=3, stride=2),
 
       Conv2d(256, 384, kernel_size=3, padding=1),
+      MYBN(384),
       nn.ReLU(inplace=True),
       activation_quantize_fn(a_bit=abit),
 
       Conv2d(384, 384, kernel_size=3, padding=1),
+      MYBN(384),
       nn.ReLU(inplace=True),
       activation_quantize_fn(a_bit=abit),
 
       Conv2d(384, 256, kernel_size=3, padding=1),
+      MYBN(256)
       nn.ReLU(inplace=True),
       activation_quantize_fn(a_bit=abit),
       nn.MaxPool2d(kernel_size=3, stride=2),
