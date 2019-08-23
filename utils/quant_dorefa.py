@@ -2,7 +2,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import numpy as np
-
+from torch.autograd import Variable
 
 def uniform_quantize(k):
   class qfn(torch.autograd.Function):
@@ -61,75 +61,17 @@ class activation_quantize_fn(nn.Module):
       # print(np.unique(activation_q.detach().numpy()))
     return activation_q
 
-class quan_bn(nn.Module):
-  def __init__(self,bitA):
-    super(quan_bn,self).__init__()
-    self.bitA = bitA
-
-  def forward(self,x):
-
-    def get_quan_point():
-        return np.array([(2**self.bitA-i+0.5)/(2**self.bitA-1) \
-            for i in range(2**self.bitA,1,-1)])
-
-    quan_points0 = get_quan_point().astype(np.float32)
-
-    quan_values = np.array([round((quan_points0[i]-0.005)*(2**self.bitA-1))\
-    /(float(2**self.bitA-1)) for i in range(len(quan_points0))])#values after quantization 
-    quan_values = np.append(quan_values,np.array([1]))
-    quan_points0 = np.append(np.insert(quan_points0,0,-1000.),np.array([1000.]))
-
-    shape = list(x.size())
-
-    layer = nn.BatchNorm2d(shape[1]).cuda()
-    fake_output = layer(x)
-    gamma = layer.weight
-    beta = layer.bias
-    moving_mean = layer.running_mean
-    moving_std = torch.sqrt(layer.running_var)
-
-    c_max = torch.max(torch.max(torch.max(x,dim=0).values,dim=-1).values,dim=-1).values
-    c_min = torch.min(torch.min(torch.min(x,dim=0).values,dim=-1).values,dim=-1).values
-
-
-    if self.training:
-        bm = torch.unsqueeze(torch.mean(x,dim=[0,2,3]),dim=-1).cuda()
-        bv = torch.unsqueeze(torch.sqrt(torch.var(x,dim=[0,2,3])),dim=-1).cuda()
-
-        quan_points = bv*torch.tensor(quan_points0,dtype=torch.float).cuda()/(torch.unsqueeze(gamma,dim=-1)) + \
-        bm - bv*torch.unsqueeze(beta/gamma,dim=-1).type(torch.cuda.FloatTensor)
-
-    else:
-        quan_points = torch.unsqueeze(moving_std,dim=-1)*torch.tensor(quan_points0,dtype=torch.float).cuda()/(torch.unsqueeze(gamma,dim=-1)) + \
-        torch.unsqueeze(moving_mean,dim=-1) - torch.unsqueeze(moving_std,dim=-1)*torch.unsqueeze(beta/gamma,dim=-1).type(torch.cuda.FloatTensor)
-
-    inputs = torch.reshape(torch.transpose(x,1,-1),[-1,shape[1]])
-
-    label = []
-
-    for i in range(1,quan_points.shape[1]):
-
-        label.append((inputs>quan_points[:,i-1]) * (inputs<quan_points[:,i]))
-
-    xn = label[0].type(torch.cuda.FloatTensor)*quan_values[0]
-    for i in range(1,len(label)):
-
-        xn += label[i].type(torch.cuda.FloatTensor)*quan_values[i]
-
-    quan_output = torch.transpose(torch.reshape(xn,[shape[0],shape[2],shape[3],shape[1]]),1,-1)
-
-    if self.training:
-        return fake_output
-
-    else:
-        return fake_output
 
 class MYBN(nn.Module):
-    def __init__(self,channel,decay=0.9):
+    def __init__(self,channel,decay=0.9,eps=0.00001,affine= True):
         super(MYBN,self).__init__()
         self.channel= channel
-        self.gamma = Variable(torch.ones(channel,dtype=torch.float),requires_grad = True)
-        self.beta = Variable(torch.zeros(channel,dtype=torch.float),requires_grad = True)
+        if affine:
+            self.gamma = Variable(torch.ones(channel,dtype=torch.float),requires_grad = True)
+            self.beta = Variable(torch.zeros(channel,dtype=torch.float),requires_grad = True)
+        else:
+            self.gamma = Variable(torch.ones(channel,dtype=torch.float))
+            self.beta = Variable(torch.zeros(channel,dtype=torch.float))         
         self.moving_mean = Variable(torch.zeros(channel,dtype=torch.float))
         self.moving_var = Variable(torch.ones(channel,dtype=torch.float))       
         self.decay = decay
@@ -139,7 +81,7 @@ class MYBN(nn.Module):
         c_min = torch.min(torch.min(torch.min(x,dim=0)[0],dim=0)[0],dim=0)[0]
                                    
         mean = (c_max+c_min)/2
-        var = (c_max-c_min)/2
+        var = (c_max-c_min)/2 + eps
                                    
         if self.training:
             self.moving_mean = self.decay * self.moving_mean + (1-self.decay) * mean
