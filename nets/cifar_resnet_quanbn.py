@@ -43,7 +43,7 @@ class PreActBlock_conv_Q(nn.Module):
 class PreActResNet(nn.Module):
   def __init__(self, block, num_units, wbit, abit, num_classes):
     super(PreActResNet, self).__init__()
-    self.conv0 = nn.Conv2d(1, 16, kernel_size=3, stride=1, padding=1, bias=False)
+    self.conv0 = nn.Conv2d(3, 16, kernel_size=3, stride=1, padding=1, bias=False)
 
     self.layers = nn.ModuleList()
     in_planes = 16
