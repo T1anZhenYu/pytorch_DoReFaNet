@@ -17,8 +17,7 @@ class PreActBlock_conv_Q(nn.Module):
     self.conv0 = Conv2d(in_planes, out_planes, kernel_size=3, stride=stride, padding=1, bias=False)
     self.bn1 = nn.BatchNorm2d(out_planes)
     self.conv1 = Conv2d(out_planes, out_planes, kernel_size=3, stride=1, padding=1, bias=False)
-    self.quan_bn1 = quan_bn(abit)
-    self.quan_bn2 = quan_bn(abit)
+
     self.skip_conv = None
     if stride != 1:
       self.skip_conv = Conv2d(in_planes, out_planes, kernel_size=1, stride=stride, padding=0, bias=False)
