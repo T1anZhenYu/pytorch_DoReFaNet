@@ -89,9 +89,9 @@ class MYBN(nn.Module):
         if self.training:
             self.moving_mean = self.decay * self.moving_mean + (1-self.decay) * mean
             self.moving_var = self.decay * self.moving_var + (1-self.decay)*var 
-            return torch.transpose(self.gamma*(x - mean)/var + self.beta,1,3)
+            return torch.transpose(self.gamma*(x - mean)/torch.sqrt(var) + self.beta,1,3)
         else:
-            return torch.transpose(self.gamma*(x-self.moving_mean)/self.moving_var + self.beta,1,3)
+            return torch.transpose(self.gamma*(x-self.moving_mean)/torch.sqrt(self.moving_var) + self.beta,1,3)
 
 
 
