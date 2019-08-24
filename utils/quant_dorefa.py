@@ -135,14 +135,8 @@ def conv2d_Q_fold_bn(w_bit):
         self.w_bit = w_bit
         self.quantize_fn = weight_quantize_fn(w_bit=w_bit)
 
-        self.channel= out_channels
-
-        self.gamma = Variable(torch.ones(channel,dtype=torch.float),requires_grad = True).cuda()
-        self.beta = Variable(torch.zeros(channel,dtype=torch.float),requires_grad = True).cuda()
-        self.moving_mean = Variable(torch.zeros(channel,dtype=torch.float),requires_grad = False).cuda()
-        self.moving_var = Variable(torch.ones(channel,dtype=torch.float),requires_grad = False).cuda()    
-        self.decay = 0.9
-        self.eps = 0.00001      
+        self.bn = MYBN(out_channels)
+    
     def forward(self, input, order=None):
         if self.training:
 
@@ -150,10 +144,11 @@ def conv2d_Q_fold_bn(w_bit):
             # print(np.unique(weight_q.detach().numpy()))
             x = F.conv2d(input, weight_q, self.bias, self.stride,
                           self.padding, self.dilation, self.groups)
-            x = torch.transpose(x,1,3)  
-            mean = torch.mean(x,(0,1,2)).cuda()
-            var = torch.var(x,(0,1,2)).cuda()  
-            (x-mean)        
+            x = self.bn(x)
+            return x
+        else:
+            w = self.weight*self.bn.gamma/torch.sqrt(self.bn.moving_var)
+            b = self.bn.beta-self.gamma/torch.sqrt(self.bn.moving_var)*(self.moving_mean-self.bias)
 
 
   return Conv2d_Q
