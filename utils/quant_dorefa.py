@@ -84,7 +84,7 @@ class MYBN(nn.Module):
         #mean = (c_max+c_min)/2
         #var = (c_max-c_min) + self.eps
         mean = torch.mean(x,(0,1,2)).cuda()
-        var = torch.var(x,(0,1,2)).cuda()
+        var = torch.var(x,(0,1,2)).cuda()+self.eps
                                    
         if self.training:
             self.moving_mean = self.decay * self.moving_mean + (1-self.decay) * mean
