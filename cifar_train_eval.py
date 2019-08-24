@@ -116,6 +116,8 @@ def main():
         summary_writer.add_scalar('cls_loss', loss.item(), step)
         summary_writer.add_scalar('learning rate', optimizer.param_groups[0]['lr'], step)
     acc = 100. * correct / len(train_dataset)
+    print('------------------------------------------------------ ')
+    print('train acc:',acc)
     summary_writer.add_scalar('train_acc', acc, global_step=epoch)  
   def test(epoch):
     # pass
@@ -129,8 +131,8 @@ def main():
       correct += predicted.eq(targets.data).cpu().sum().item()
 
     acc = 100. * correct / len(eval_dataset)
-    print('%s------------------------------------------------------ '
-          'Precision@1: %.2f%% \n' % (datetime.now(), acc))
+
+    print('test acc', acc)
     summary_writer.add_scalar('Precision@1', acc, global_step=epoch)
 
   for epoch in range(cfg.max_epochs):
