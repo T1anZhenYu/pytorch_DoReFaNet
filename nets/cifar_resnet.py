@@ -1,7 +1,7 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from utils.quan_dorefa import *
+from utils.quant_dorefa import *
 
 
 class PreActBlock_conv_Q(nn.Module):
