@@ -81,10 +81,10 @@ class MYBN(nn.Module):
         c_max = torch.max(torch.max(torch.max(x,dim=0)[0],dim=0)[0],dim=0)[0].cuda()
         c_min = torch.min(torch.min(torch.min(x,dim=0)[0],dim=0)[0],dim=0)[0].cuda()
                                    
-        # mean = (c_max+c_min)/2
-        # var = (c_max-c_min)/2 + self.eps
-        mean = torch.mean(x,(0,1,2)).cuda()
-        var = torch.var(x,(0,1,2)).cuda()
+        mean = (c_max+c_min)/2
+        var = (c_max-c_min) + self.eps
+        # mean = torch.mean(x,(0,1,2)).cuda()
+        # var = torch.var(x,(0,1,2)).cuda()
                                    
         if self.training:
             self.moving_mean = self.decay * self.moving_mean + (1-self.decay) * mean
