@@ -81,10 +81,10 @@ class MYBN(nn.Module):
         c_max = torch.max(torch.max(torch.max(x,dim=0)[0],dim=0)[0],dim=0)[0].cuda()
         c_min = torch.min(torch.min(torch.min(x,dim=0)[0],dim=0)[0],dim=0)[0].cuda()
                                    
-        mean = (c_max+c_min)/2
-        var = (c_max-c_min) + self.eps
-        # mean = torch.mean(x,(0,1,2)).cuda()
-        # var = torch.var(x,(0,1,2)).cuda()
+        #mean = (c_max+c_min)/2
+        #var = (c_max-c_min) + self.eps
+        mean = torch.mean(x,(0,1,2)).cuda()
+        var = torch.var(x,(0,1,2)).cuda()
                                    
         if self.training:
             self.moving_mean = self.decay * self.moving_mean + (1-self.decay) * mean
@@ -93,7 +93,37 @@ class MYBN(nn.Module):
         else:
             return torch.transpose(self.gamma*(x-self.moving_mean)/torch.sqrt(self.moving_var) + self.beta,1,3)
 
+def conv2d_Q_fold_bn(w_bit):
+  class Conv2d_Q(nn.Conv2d):
+    def __init__(self, in_channels, out_channels, kernel_size, stride=1,
+                 padding=0, dilation=1, groups=1, bias=True):
+        super(Conv2d_Q, self).__init__(in_channels, out_channels, kernel_size, stride,
+                                     padding, dilation, groups, bias)
+        self.w_bit = w_bit
+        self.quantize_fn = weight_quantize_fn(w_bit=w_bit)
 
+        self.channel= out_channels
+
+        self.gamma = Variable(torch.ones(channel,dtype=torch.float),requires_grad = True).cuda()
+        self.beta = Variable(torch.zeros(channel,dtype=torch.float),requires_grad = True).cuda()
+        self.moving_mean = Variable(torch.zeros(channel,dtype=torch.float),requires_grad = False).cuda()
+        self.moving_var = Variable(torch.ones(channel,dtype=torch.float),requires_grad = False).cuda()    
+        self.decay = 0.9
+        self.eps = 0.00001      
+    def forward(self, input, order=None):
+        if self.training:
+
+            weight_q = self.quantize_fn(self.weight)
+            # print(np.unique(weight_q.detach().numpy()))
+            x = F.conv2d(input, weight_q, self.bias, self.stride,
+                          self.padding, self.dilation, self.groups)
+            x = torch.transpose(x,1,3)  
+            mean = torch.mean(x,(0,1,2)).cuda()
+            var = torch.var(x,(0,1,2)).cuda()  
+            (x-mean)        
+
+
+  return Conv2d_Q
 
 def conv2d_Q_fn(w_bit):
   class Conv2d_Q(nn.Conv2d):
