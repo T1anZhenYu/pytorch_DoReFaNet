@@ -102,7 +102,7 @@ def main():
       loss.backward()
       optimizer.step()
       _, predicted = torch.max(outputs.data, 1)
-      correct += predicted.eq(targets.data).cpu().sum().item()      
+      correct += predicted.eq(targets.data).sum().item()      
 
       if batch_idx % cfg.log_interval == 0:
         step = len(train_loader) * epoch + batch_idx
