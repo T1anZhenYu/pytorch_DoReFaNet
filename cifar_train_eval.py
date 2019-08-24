@@ -12,7 +12,7 @@ import torchvision
 
 from tensorboardX import SummaryWriter
 
-from nets.cifar_resnet_quanbn import *
+from nets.cifar_resnet import *
 
 from utils.preprocessing import *
 
@@ -93,6 +93,7 @@ def main():
     model.train()
 
     start_time = time.time()
+    correct = 0 
     for batch_idx, (inputs, targets) in enumerate(train_loader):
       outputs = model(inputs.cuda())
       loss = criterion(outputs, targets.cuda())
@@ -100,6 +101,8 @@ def main():
       optimizer.zero_grad()
       loss.backward()
       optimizer.step()
+      _, predicted = torch.max(outputs.data, 1)
+      correct += predicted.eq(targets.data).cpu().sum().item()      
 
       if batch_idx % cfg.log_interval == 0:
         step = len(train_loader) * epoch + batch_idx
@@ -112,7 +115,8 @@ def main():
         start_time = time.time()
         summary_writer.add_scalar('cls_loss', loss.item(), step)
         summary_writer.add_scalar('learning rate', optimizer.param_groups[0]['lr'], step)
-
+    acc = 100. * correct / len(train_dataset)
+    summary_writer.add_scalar('train_acc', acc, global_step=epoch)  
   def test(epoch):
     # pass
     model.eval()
