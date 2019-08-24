@@ -102,8 +102,8 @@ def main():
       loss.backward()
       optimizer.step()
       _, predicted = torch.max(outputs.data, 1)
-      print('targets.data',targets.data)
-      print('predicted',predicted)
+      # print('targets.data',targets.data)
+      # print('predicted',predicted)
       correct += predicted.eq(targets.data.cuda()).sum().item()      
 
       if batch_idx % cfg.log_interval == 0:
