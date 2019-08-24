@@ -12,7 +12,7 @@ import torchvision
 
 from tensorboardX import SummaryWriter
 
-from nets.cifar_resnet_quanbn import *
+from nets.cifar_resnet import *
 
 from utils.preprocessing import *
 
