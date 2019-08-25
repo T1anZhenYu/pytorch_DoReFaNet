@@ -9,7 +9,7 @@ class PreActBlock_conv_Q(nn.Module):
 
   def __init__(self, wbit, abit, in_planes, out_planes, stride=1):
     super(PreActBlock_conv_Q, self).__init__()
-    Conv2d_fbn = Conv2d_fold_bn(w_bit=wbit)
+    Conv2d_fbn = conv2d_Q_fold_bn(w_bit=wbit)
     self.act_q = activation_quantize_fn(a_bit=abit)
 
     #self.bn0 = nn.BatchNorm2d(in_planes)
