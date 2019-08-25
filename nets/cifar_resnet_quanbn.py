@@ -55,7 +55,7 @@ class PreActResNet(nn.Module):
       self.layers.append(block(wbit, abit, in_planes, channel, stride))
       in_planes = channel
 
-    self.bn = nn.BatchNorm2d(64)
+    self.bn = MYBN(64)
     self.logit = nn.Linear(64, num_classes)
 
   def forward(self, x):
