@@ -149,7 +149,7 @@ def conv2d_Q_fold_bn(w_bit):
             x = self.bn(x)
             return x
         else:
-            shape_2d = [1,self.weight.shape[1],1,1]
+            shape_2d = [self.weight.shape[0],1,1,1]
             gamma = self.bn.weight.view(shape_2d)
             beta = self.bn.bias.view(shape_2d)
             mv = self.bn.running_var.view(shape_2d)
