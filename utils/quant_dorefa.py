@@ -154,10 +154,13 @@ def conv2d_Q_fold_bn(w_bit):
             beta = self.bn.bias.view(shape_2d)
             mv = self.bn.running_var.view(shape_2d)
             mm = self.bn.running_mean.view(shape_2d)
-            b = self.bias.view(shape_2d)
 
             w = self.weight*gamma/torch.sqrt(mv)
-            b = beta-gamma/torch.sqrt(mv)*(mm-b)
+            if bias:
+                b = self.bias.view(shape_2d)
+                b = beta-gamma/torch.sqrt(mv)*(mm-b)
+            else:
+                b = beta-gamma/torch.sqrt(mv)*mm              
 
             weight_q = self.quantize_fn(w)
             x = F.conv2d(input, weight_q, b, self.stride,
