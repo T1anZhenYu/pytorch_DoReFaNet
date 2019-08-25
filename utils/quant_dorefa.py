@@ -117,12 +117,12 @@ def batch_norm(X, gamma, beta, moving_mean, moving_var, is_training=True, eps=1e
 
         mu = ((c_max+c_min)/2).view(shape_2d)
         var = (c_max - c_min).view(shape_2d)
-        mu_ = torch.mean(X, dim=(0, 2, 3)).view(shape_2d)
-        var_ = torch.mean(
-            (X - mu_) ** 2, dim=(0, 2, 3)).view(shape_2d) # biased
+        # mu_ = torch.mean(X, dim=(0, 2, 3)).view(shape_2d)
+        # var_ = torch.mean(
+        #     (X - mu_) ** 2, dim=(0, 2, 3)).view(shape_2d) # biased
 
         if is_training:
-            X_hat = (X - mu_) / torch.sqrt(var + eps)
+            X_hat = (X - mu) / torch.sqrt(var + eps)
             moving_mean = momentum * moving_mean.view(shape_2d) + (1.0 - momentum) * mu
             moving_var = momentum * moving_var.view(shape_2d) + (1.0 - momentum) * var
         else:
