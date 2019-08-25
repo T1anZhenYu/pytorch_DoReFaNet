@@ -81,7 +81,7 @@ class MYBN(nn.Module):
         self.reset_parameters()
 
     def reset_parameters(self):
-        nn.init.uniform_(self.gamma)
+        nn.init.ones_(self.gamma)
         nn.init.zeros_(self.beta)
         nn.init.ones_(self.moving_var)
         nn.init.zeros_(self.moving_mean)
