@@ -163,7 +163,7 @@ def conv2d_Q_fold_bn(w_bit):
                 b = beta-gamma/torch.sqrt(mv)*mm              
 
             weight_q = self.quantize_fn(w)
-            x = F.conv2d(input, weight_q, b, self.stride,
+            x = F.conv2d(input, weight_q, torch.squeeze(b), self.stride,
                           self.padding, self.dilation, self.groups)
             return x
 
