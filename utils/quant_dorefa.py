@@ -137,7 +137,7 @@ def conv2d_Q_fold_bn(w_bit):
         self.w_bit = w_bit
         self.quantize_fn = weight_quantize_fn(w_bit=w_bit)
 
-        self.bn = MYBN(out_channels)
+        self.bn = nn.BatchNorm2d(out_channels)
     
     def forward(self, input, order=None):
         if self.training:
@@ -149,8 +149,8 @@ def conv2d_Q_fold_bn(w_bit):
             x = self.bn(x)
             return x
         else:
-            w = self.weight*self.bn.gamma/torch.sqrt(self.bn.moving_var)
-            b = self.bn.beta-self.gamma/torch.sqrt(self.bn.moving_var)*(self.moving_mean-self.bias)
+            w = self.weight*self.bn.gamma/torch.sqrt(self.bn.running_var)
+            b = self.bn.beta-self.bn.gamma/torch.sqrt(self.bn.running_var)*(self.bn.running_mean-self.bias)
 
             weight_q = self.quantize_fn(w)
             x = F.conv2d(input, weight_q, b, self.stride,
