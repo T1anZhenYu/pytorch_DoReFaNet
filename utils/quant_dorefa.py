@@ -149,6 +149,10 @@ def conv2d_Q_fold_bn(w_bit):
             x = self.bn(x)
             return x
         else:
+            print('weight:',self.weight.shape)
+            print('gamma:',self.bn.weight.shape)
+            print('beta:',self.bn.bias.shape)
+            print('running_var:',self.bn.running_var.shape)
             w = self.weight*self.bn.weight/torch.sqrt(self.bn.running_var)
             b = self.bn.bias-self.bn.weight/torch.sqrt(self.bn.running_var)*(self.bn.running_mean-self.bias)
 
