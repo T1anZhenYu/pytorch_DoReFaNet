@@ -35,7 +35,7 @@ parser.add_argument('--wd', type=float, default=1e-4)
 
 parser.add_argument('--train_batch_size', type=int, default=128)
 parser.add_argument('--eval_batch_size', type=int, default=100)
-parser.add_argument('--max_epochs', type=int, default=200)
+parser.add_argument('--max_epochs', type=int, default=300)
 
 parser.add_argument('--log_interval', type=int, default=10)
 parser.add_argument('--use_gpu', type=str, default='0')
