@@ -77,7 +77,7 @@ class MYBN(nn.Module):
         self.beta = nn.Parameter(torch.zeros(self.num_features), requires_grad=True)      
         # moving_averge
         self.moving_mean = torch.zeros(self.num_features)
-        self.moving_var = torch.zeros(self.num_features)
+        self.moving_var = torch.ones(self.num_features)
         self.reset_parameters()
 
     def reset_parameters(self):
