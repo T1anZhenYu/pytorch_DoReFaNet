@@ -19,7 +19,7 @@ from utils.preprocessing import *
 # Training settings
 parser = argparse.ArgumentParser(description='DoReFa-Net pytorch implementation')
 
-parser.add_argument('--root_dir', type=str, default='./')
+parser.add_argument('--root_dir', type=str, default='./train_log')
 parser.add_argument('--data_dir', type=str, default='./data')
 parser.add_argument('--log_name', type=str, default='resnet_w1a32')
 parser.add_argument('--pretrain', action='store_true', default=False)
