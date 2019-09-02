@@ -78,13 +78,13 @@ class MYBN(nn.Module):
         # moving_averge
         self.moving_mean = torch.zeros(self.num_features)
         self.moving_var = torch.ones(self.num_features)
-        self.reset_parameters()
+        # self.reset_parameters()
 
-    def reset_parameters(self):
-        nn.init.ones_(self.gamma)
-        nn.init.zeros_(self.beta)
-        nn.init.zeros_(self.moving_var)
-        nn.init.zeros_(self.moving_mean)
+    # def reset_parameters(self):
+    #     nn.init.ones_(self.gamma)
+    #     nn.init.zeros_(self.beta)
+    #     nn.init.zeros_(self.moving_var)
+    #     nn.init.zeros_(self.moving_mean)
 
     def forward(self, X):
         assert len(X.shape) in (2, 4)
