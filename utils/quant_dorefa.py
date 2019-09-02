@@ -73,8 +73,8 @@ class MYBN(nn.Module):
         self.eps = 1e-5
         self.momentum = 0.1
         # hyper paramaters
-        self.gamma = nn.Parameter(torch.Tensor(self.num_features), requires_grad=True)
-        self.beta = nn.Parameter(torch.Tensor(self.num_features), requires_grad=True)      
+        self.gamma = nn.Parameter(torch.ones(self.num_features), requires_grad=True)
+        self.beta = nn.Parameter(torch.zeros(self.num_features), requires_grad=True)      
         # moving_averge
         self.moving_mean = torch.zeros(self.num_features)
         self.moving_var = torch.zeros(self.num_features)
