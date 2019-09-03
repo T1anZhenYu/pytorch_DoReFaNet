@@ -21,7 +21,7 @@ class PreActBlock_conv_Q(nn.Module):
     self.skip_conv = None
     if stride != 1:
       self.skip_conv = Conv2d(in_planes, out_planes, kernel_size=1, stride=stride, padding=0, bias=False)
-      self.skip_bn = nn.BatchNorm2d(out_planes)
+      self.skip_bn = MYBN(out_planes)
 
   def forward(self, x):
     out = self.act_q(F.relu(self.bn0(x)))
