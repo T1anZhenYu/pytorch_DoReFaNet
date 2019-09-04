@@ -26,7 +26,7 @@ class PreActBlock_conv_Q(nn.Module):
   def forward(self, x):
     #out = self.act_q(F.relu(self.bn0(x)))
     if self.skip_conv is not None:
-      shortcut = self.skip_conv(out)
+      shortcut = self.skip_conv(x)
       shortcut = self.act_q(F.relu(self.skip_bn(shortcut)))
     else:
       shortcut = x
