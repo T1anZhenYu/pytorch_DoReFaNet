@@ -29,7 +29,7 @@ parser.add_argument('--cifar', type=int, default=10)
 
 parser.add_argument('--Wbits', type=int, default=1)
 parser.add_argument('--Abits', type=int, default=32)
-
+parser.add_argument('--start_epoch',type=int,default=1)
 parser.add_argument('--lr', type=float, default=0.1)
 parser.add_argument('--wd', type=float, default=1e-4)
 

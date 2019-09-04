@@ -13,7 +13,7 @@ class PreActBlock_conv_Q(nn.Module):
     Conv2d = conv2d_Q_fn(w_bit=wbit)
     self.act_q = activation_quantize_fn(a_bit=abit)
 
-    self.bn0 = MYBN(in_planes)
+    self.bn0 = MYBN(out_planes)
     self.conv0 = Conv2d(in_planes, out_planes, kernel_size=3, stride=stride, padding=1, bias=False)
     self.bn1 = MYBN(out_planes)
     self.conv1 = Conv2d(out_planes, out_planes, kernel_size=3, stride=1, padding=1, bias=False)
@@ -24,16 +24,17 @@ class PreActBlock_conv_Q(nn.Module):
       self.skip_bn = MYBN(out_planes)
 
   def forward(self, x):
-    out = self.act_q(F.relu(self.bn0(x)))
+    #out = self.act_q(F.relu(self.bn0(x)))
     if self.skip_conv is not None:
       shortcut = self.skip_conv(out)
-      shortcut = self.skip_bn(shortcut)
+      shortcut = self.act_q(F.relu(self.skip_bn(shortcut)))
     else:
       shortcut = x
 
     out = self.conv0(out)
-    out = self.act_q(F.relu(self.bn1(out)))
+    out = self.act_q(F.relu(self.bn0(out)))
     out = self.conv1(out)
+    out = self.act_q(F.relu(self.bn1(out)))
     out += shortcut
     return out
 
