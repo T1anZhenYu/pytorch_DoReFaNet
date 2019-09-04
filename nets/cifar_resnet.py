@@ -23,18 +23,17 @@ class PreActBlock_conv_Q(nn.Module):
       self.skip_bn = nn.BatchNorm2d(out_planes)
 
   def forward(self, x):
-    out = self.act_q(F.relu(self.bn0(x)))
-    #out = self.quan_bn1(x)
+    #out = self.act_q(F.relu(self.bn0(x)))
     if self.skip_conv is not None:
-      shortcut = self.skip_conv(out)
-      shortcut = self.skip_bn(shortcut)
+      shortcut = self.skip_conv(x)
+      shortcut = self.act_q(F.relu(self.skip_bn(shortcut)))
     else:
       shortcut = x
 
-    out = self.conv0(out)
-    out = self.act_q(F.relu(self.bn1(out)))
-    #out = self.quan_bn2(out)
+    out = self.conv0(x)
+    out = self.act_q(F.relu(self.bn0(out)))
     out = self.conv1(out)
+    out = self.act_q(F.relu(self.bn1(out)))
     out += shortcut
     return out
 
@@ -58,18 +57,12 @@ class PreActResNet(nn.Module):
     self.logit = nn.Linear(64, num_classes)
 
   def forward(self, x):
-    #out = self.act_q(F.relu(self.bn0(x)))
-    if self.skip_conv is not None:
-      shortcut = self.skip_conv(x)
-      shortcut = self.act_q(F.relu(self.skip_bn(shortcut)))
-    else:
-      shortcut = x
-
     out = self.conv0(x)
-    out = self.act_q(F.relu(self.bn0(out)))
-    out = self.conv1(out)
-    out = self.act_q(F.relu(self.bn1(out)))
-    out += shortcut
+    for layer in self.layers:
+      out = layer(out)
+    out = self.bn(out)
+    out = out.mean(dim=2).mean(dim=2)
+    out = self.logit(out)
     return out
 
 
