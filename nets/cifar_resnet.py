@@ -12,7 +12,7 @@ class PreActBlock_conv_Q(nn.Module):
     Conv2d = conv2d_Q_fn(w_bit=wbit)
     self.act_q = activation_quantize_fn(a_bit=abit)
 
-    self.bn0 = nn.BatchNorm2d(in_planes)
+    self.bn0 = nn.BatchNorm2d(out_planes)
     self.conv0 = Conv2d(in_planes, out_planes, kernel_size=3, stride=stride, padding=1, bias=False)
     self.bn1 = nn.BatchNorm2d(out_planes)
     self.conv1 = Conv2d(out_planes, out_planes, kernel_size=3, stride=1, padding=1, bias=False)
