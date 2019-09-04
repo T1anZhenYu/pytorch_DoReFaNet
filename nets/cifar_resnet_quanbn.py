@@ -31,7 +31,7 @@ class PreActBlock_conv_Q(nn.Module):
     else:
       shortcut = x
 
-    out = self.conv0(out)
+    out = self.conv0(x)
     out = self.act_q(F.relu(self.bn0(out)))
     out = self.conv1(out)
     out = self.act_q(F.relu(self.bn1(out)))
